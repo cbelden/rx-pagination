@@ -156,17 +156,8 @@ function search (queryTokens) {
 
 
 /**
- * Rendering
+ * Highlighting
  */
-
-
-function buildPageNumbers (content, page) {
-    if (page.active) {
-        return content += '<li><a href="#">' + page.number + '</a></li>';
-    }
-
-    return content += '<li>' + page.number + '</li>';
-}
 
 
 function highlightMatches(term, queryTokens) {
