@@ -33,13 +33,16 @@ label {
 
 .page-numbers {
     list-style: none;
+    margin-left: 20px;
+    display: inline-block;
+    padding: 0;
 }
 
 .page-numbers li {
     display: inline;
-    padding: 2px;
 }
 
 .page-numbers a {
     text-decoration: none;
+    color: blue;
 }
