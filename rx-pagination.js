@@ -13,7 +13,7 @@ $(document).ready(function () {
         .map(function (e) { return $(e.target).val(); })
         .map(tokenize)
         .map(search)
-        .startWith({func: function () { return true }, query: []});
+        .startWith({filter: function () { return true }, query: []});
 
 
     /*
@@ -34,17 +34,17 @@ $(document).ready(function () {
      *  Combination of filter and paging updates (will capture any filtering/paging changes)
      */
     var pageUpdates = filterUpdates
-        .selectMany(function (filter) {
+        .selectMany(function (search) {
             return pagingUpdates
                 .map(function (page) {
                     return {
-                        filter: filter.func,
+                        filter: search.filter,
                         page: page,
                         pageSize: 6,
-                        query: filter.query
+                        query: search.query
                     }
                 })
-                .startWith({filter: filter.func, query: [], page: 1, pageSize: 6});
+                .startWith({filter: search.filter, query: [], page: 1, pageSize: 6});
         });
 
 
@@ -117,7 +117,7 @@ $(document).ready(function () {
 
     function search (queryTokens) {
         return {
-            func: function (resultTokens) {
+            filter: function (resultTokens) {
                 if (!queryTokens) return true;
 
                 /*
@@ -132,7 +132,7 @@ $(document).ready(function () {
                 });
             },
 
-            query: queryTokens            
+            query: queryTokens
         };
     }
 
@@ -141,7 +141,7 @@ $(document).ready(function () {
      * Rendering
      * ***********************
      */
-    
+
 
     function populateContent (selector) {
         return function (content) {
@@ -161,22 +161,30 @@ $(document).ready(function () {
         if (page.active) {
             return content += '<li><a href="#">' + page.number + '</a></li>';
         }
-        
+
         return content += '<li>' + page.number + '</li>';
     }
 
 
-    function highlightMatches(s, queryTokens) {
-        var resultTokens = tokenize(s);
+    function highlightMatches(term, queryTokens) {
+        var resultTokens = term.split(' ');
 
         return resultTokens
             .map(function (resultToken) {
-                var match = queryTokens.filter(function (queryToken) {
-                    return resultToken.indexOf(queryToken) !== -1;
-                })[0];
+                var match = queryTokens
+                    .map(function (queryToken) {
+                        return {
+                            index: resultToken.toLowerCase().indexOf(queryToken),
+                            size: queryToken.length
+                        }
+                    })
+                    .filter(function (match) { return match.index !== -1 })[0];
 
                 if (match) {
-                    return resultToken.replace(match, '<span class="match">' + match + '</span>');
+                    var left = resultToken.slice(0, match.index);
+                    var middle = resultToken.slice(match.index, match.index + match.size);
+                    var right = resultToken.slice(match.index + match.size);
+                    return left + '<span class="match">' + middle + '</span>' + right;
                 }
 
                 return resultToken;
@@ -184,9 +192,3 @@ $(document).ready(function () {
             .join(' ');
     }
 });
-
-
-
-
-
-
