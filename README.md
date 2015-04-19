@@ -22,4 +22,4 @@ Feel free to make a pull request if you see any improvements!
 * templating: `handlebars`
 * bundling: `browserify`
 * handlebars transform: `hbsfy`
-* DOM: `jQuery`
+* DOM helper: `jQuery`
