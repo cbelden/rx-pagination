@@ -1,0 +1,42 @@
+html, body {
+    font-family: sans-serif;
+    padding-left: 30px;
+    color: rgb(84, 84, 84);
+}
+
+.result {
+    padding: 20px;
+    width: 400px;
+    border: 1px solid rgb(213, 213, 213);
+    margin-bottom: -1px;
+}
+
+.results {
+    min-height: 400px;
+}
+
+.search {
+    margin-bottom: 20px;
+}
+
+label {
+    margin-right: 20px;
+}
+
+.match {
+    background-color: rgb(177, 255, 115);
+    padding: 2px 0;
+}
+
+.page-numbers {
+    list-style: none;
+}
+
+.page-numbers li {
+    display: inline;
+    padding: 2px;
+}
+
+.page-numbers a {
+    text-decoration: none;
+}
