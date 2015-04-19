@@ -7,16 +7,16 @@ var source = require('vinyl-source-stream');
 var concat = require('gulp-concat');
 
 gulp.task('bundle', function () {
-    var bundleStream = browserify('./rx-pagination.js', {debug: true})
+    var bundleStream = browserify('./index.js', {debug: true})
         .transform(hbsfy)
         .bundle();
 
     bundleStream
-        .pipe(source('./rx-pagination.js'))
+        .pipe(source('./index.js'))
         .pipe(gulp.dest('./bin'));
 });
 
 gulp.task('watch', function () {
-    gulp.watch('./rx-pagination.js', ['bundle']);
+    gulp.watch('./index.js', ['bundle']);
     gulp.watch('./templates/*.handlebars', ['bundle']);
 })
