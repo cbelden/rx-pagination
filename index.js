@@ -11,7 +11,7 @@
   */
  var templates = {};
  templates.results = require('./templates/results.handlebars');
- templates.pageNumbers = require('./templates/page-numbers.handlebars'); 
+ templates.pageNumbers = require('./templates/page-numbers.handlebars');
 
 
 /**
@@ -24,7 +24,7 @@
  *  Filter updates (ie when a user enters new text in the search box)
  */
 var searchInput = document.getElementById('search');
-var filterUpdates = Rx.Observable.fromEvent(searchInput, 'keyup')
+var searchEvents = Rx.Observable.fromEvent(searchInput, 'keyup')
     .map(function (e) { return $(e.target).val(); })
     .map(tokenize)
     .map(search)
@@ -37,7 +37,7 @@ var filterUpdates = Rx.Observable.fromEvent(searchInput, 'keyup')
  *  subsribe to events for dom elements that may/may not be present yet.
  */
 var $pageLinks = $('.results-container');
-var pagingUpdates = Rx.Observable.fromEventPattern(
+var pagingEvents = Rx.Observable.fromEventPattern(
     function addHandler (h) { $pageLinks.on('click', 'a', h)},
     function delHandler (h) { $pageLinks.off('click', 'a', h)})
     .map(function (e) {
@@ -48,9 +48,9 @@ var pagingUpdates = Rx.Observable.fromEventPattern(
 /**
  *  Combination of filter and paging updates (will capture any filtering/paging changes)
  */
-var pageUpdates = filterUpdates
+var pageUpdates = searchEvents
     .selectMany(function (search) {
-        return pagingUpdates
+        return pagingEvents
             .map(function (page) {
                 return {
                     filter: search.filter,
