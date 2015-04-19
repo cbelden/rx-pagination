@@ -66,7 +66,7 @@ var pageUpdates = filterUpdates
 /**
  *  Stream of page models (created when a new page update occurs)
  */
-var modelUpdates = pageUpdates
+var pageModels = pageUpdates
     .map(function (options) {
         var results = JSON.parse(JSON.stringify(resultsStore))
             .filter(function (result) {
@@ -92,7 +92,7 @@ var modelUpdates = pageUpdates
 /**
  * Subscribe to the model updates and re-render the page
  */
-modelUpdates.subscribe(function render (model) {
+pageModels.subscribe(function render (model) {
     /* Render the results */
     paginate(model.results, model)
         .map(function (result) {
@@ -128,7 +128,6 @@ function paginate (results, options) {
 
 function tokenize (s) {
     if (!s) return [];
-
     return s.toLowerCase().split(' ');
 }
 
