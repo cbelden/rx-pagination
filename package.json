@@ -24,7 +24,10 @@
   "homepage": "https://github.com/cbelden/rx-pagination",
   "devDependencies": {
     "browserify": "^9.0.8",
+    "gulp-concat": "^2.5.2",
+    "gulp-handlebars": "^4.0.0",
     "handlebars": "^3.0.1",
+    "hbsfy": "^2.2.1",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {

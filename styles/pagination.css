@@ -1,5 +1,6 @@
 html, body {
     font-family: sans-serif;
+    box-sizing: border-box;
     padding-left: 30px;
     color: rgb(84, 84, 84);
 }
@@ -12,7 +13,7 @@ html, body {
 }
 
 .results {
-    min-height: 400px;
+    min-height: 480px;
 }
 
 .search {
@@ -25,7 +26,9 @@ label {
 
 .match {
     background-color: rgb(177, 255, 115);
-    padding: 2px 0;
+    padding: 4px 0;
+    border: 1px solid rgb(109, 247, 0);
+    border-radius: 3px;
 }
 
 .page-numbers {
