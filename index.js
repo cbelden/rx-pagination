@@ -81,7 +81,7 @@ var pageModels = pageUpdates
         // Return the page's model
         return {
             query: options.query,
-            results: Rx.Observable.from(results),
+            results: results,
             pageNumbers: pageNumbers,
             pageSize: options.pageSize,
             currentPage: options.page
@@ -94,22 +94,29 @@ var pageModels = pageUpdates
  */
 pageModels.subscribe(function render (model) {
     /* Render the results */
-    paginate(model.results, model)
+    paginate(Rx.Observable.from(model.results), model)
         .map(function (result) {
             result.title = highlightMatches(result.title, model.query);
             return result;
         })
         .toArray()
-        .subscribe(function (results) {
-            $('.results').html(templates.results({ results: results }));
-        });
+        .subscribe(function (displayedResults) {
+            $('.results').html(templates.results({ results: displayedResults }));
 
+            var resultsSize = model.results.length;
+            var startIndex = (model.currentPage - 1) * model.pageSize + 1;
+            var endIndex = startIndex + displayedResults.length - 1;
 
-    /* Render the page numbers */
-    model.pageNumbers
-        .toArray()
-        .subscribe(function (pageNumbers) {
-            $('.page-numbers').html(templates.pageNumbers({ pageNumbers: pageNumbers }));
+            model.pageNumbers
+                .toArray()
+                .subscribe(function (pageNumbers) {
+                    $('.pagination').html(templates.pageNumbers({
+                        pageNumbers: pageNumbers,
+                        resultsSize: resultsSize,
+                        startIndex: startIndex,
+                        endIndex: endIndex
+                    }));
+                })
         });
 });
 

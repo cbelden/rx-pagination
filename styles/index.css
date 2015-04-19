@@ -46,3 +46,8 @@ label {
     text-decoration: none;
     color: blue;
 }
+
+.paging-summary {
+    font-size: 0.8em;
+    margin-left: 10px;
+}

@@ -1,6 +1,9 @@
-{{#each pageNumbers}}
-<li>
-{{#unless active}}{{number}}{{/unless}}
-{{#if active}}<a href="#">{{number}}</a>{{/if}}
-</li>
-{{/each}}
+<div class="paging-summary">Showing {{startIndex}} - {{endIndex}} of {{resultsSize}} results</div>
+<ul class="page-numbers">
+    {{#each pageNumbers}}
+    <li>
+    {{#unless active}}{{number}}{{/unless}}
+    {{#if active}}<a href="#">{{number}}</a>{{/if}}
+    </li>
+    {{/each}}
+</ul>
