@@ -1,0 +1,6 @@
+{{#each pageNumbers}}
+<li>
+{{#unless active}}{{number}}{{/unless}}
+{{#if active}}<a href="#">{{number}}</a>{{/if}}
+</li>
+{{/each}}
