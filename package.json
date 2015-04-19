@@ -1,0 +1,34 @@
+{
+  "name": "rx-pagination",
+  "version": "1.0.0",
+  "description": "Pagination with RxJS",
+  "main": "rx-pagination.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbelden/rx-pagination"
+  },
+  "keywords": [
+    "rxjs",
+    "pagination",
+    "javascript",
+    "js"
+  ],
+  "author": "Calvin Belden",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cbelden/rx-pagination/issues"
+  },
+  "homepage": "https://github.com/cbelden/rx-pagination",
+  "devDependencies": {
+    "browserify": "^9.0.8",
+    "handlebars": "^3.0.1",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "jquery": "^1.11.2",
+    "rx": "^2.5.2"
+  }
+}
