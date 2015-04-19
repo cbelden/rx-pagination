@@ -4,6 +4,11 @@
 var resultsStore = [{"title":"Avengers: Age of Ultron\n    (2015)"},{"title":"Inside Out\n    (2015)"},{"title":"Tomorrowland\n    (2015)"},{"title":"Jurassic World\n    (2015)"},{"title":"Mad Max: Fury Road\n    (2015)"},{"title":"Mission: Impossible - Rogue Nation\n    (2015)"},{"title":"Ant-Man\n    (2015)"},{"title":"Fantastic Four\n    (2015)"},{"title":"The Man from U.N.C.L.E.\n    (2015)"},{"title":"Minions\n    (2015)"},{"title":"Pan\n    (2015)"},{"title":"Pitch Perfect 2\n    (2015)"},{"title":"Terminator Genisys\n    (2015)"},{"title":"Aloha\n    (2015)"},{"title":"San Andreas\n    (2015)"},{"title":"Mr. Holmes\n    (2015)"},{"title":"Ricki and the Flash\n    (2015)"},{"title":"Entourage\n    (2015)"},{"title":"Southpaw\n    (2015)"},{"title":"Paper Towns\n    (2015)"},{"title":"Self/less\n    (2015)"},{"title":"Me and Earl and the Dying Girl\n    (2015)"},{"title":"Regression\n    (2015)"},{"title":"Pixels\n    (2015)"},{"title":"Vacation\n    (2015)"},{"title":"Slow West\n    (2015)"},{"title":"Before I Wake\n    (2015)"},{"title":"Ted 2\n    (2015)"},{"title":"Trainwreck\n    (2015)"},{"title":"Magic Mike XXL\n    (2015)"},{"title":"Straight Outta Compton\n    (2015)"},{"title":"Masterminds\n    (2015)"},{"title":"Poltergeist\n    (2015)"},{"title":"Maggie\n    (2015)"},{"title":"Spy\n    (2015)"},{"title":"Far from the Madding Crowd\n    (2015)"},{"title":"The End of the Tour\n    (2015)"},{"title":"Insidious: Chapter 3\n    (2015)"},{"title":"Max\n    (2015)"},{"title":"The Gift\n    (2015)"},{"title":"Hot Pursuit\n    (2015)"},{"title":"Sinister 2\n    (2015)"},{"title":"The D Train\n    (2015)"},{"title":"5 Flights Up\n    (2014)"},{"title":"Hitman: Agent 47\n    (2015)"},{"title":"Criminal\n    (2015)"},{"title":"Dope\n    (2015)"},{"title":"The Bronze\n    (2015)"},{"title":"Irrational Man\n    (2015)"},{"title":"Welcome to Me\n    (2014)"}]
 
 
+/*
+ *  Page size
+ */
+ var PAGE_SIZE = 10;
+
 $(document).ready(function () {
     /*
      *  Filter updates (ie when a user enters new text in the search box)
@@ -40,11 +45,11 @@ $(document).ready(function () {
                     return {
                         filter: search.filter,
                         page: page,
-                        pageSize: 6,
+                        pageSize: PAGE_SIZE,
                         query: search.query
                     }
                 })
-                .startWith({filter: search.filter, query: [], page: 1, pageSize: 6});
+                .startWith({filter: search.filter, query: [], page: 1, pageSize: PAGE_SIZE});
         });
 
 
