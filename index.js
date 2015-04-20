@@ -120,7 +120,8 @@ pageModels.subscribe(function render (model) {
                         pageNumbers: pageNumbers,
                         totalSize: model.totalSize,
                         startIndex: model.startIndex,
-                        endIndex: model.endIndex
+                        endIndex: model.endIndex,
+                        singlePage: pageNumbers.length <= 1
                     }));
                 })
         });

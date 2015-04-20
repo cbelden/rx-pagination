@@ -1,4 +1,5 @@
-<div class="paging-summary">Showing {{startIndex}} - {{endIndex}} of {{totalSize}} results</div>
+<div class="paging-summary">Showing {{#unless singlePage}}{{startIndex}} - {{/unless}}{{endIndex}} of {{totalSize}} results</div>
+{{#unless singlePage}}
 <ul class="page-numbers">
     {{#each pageNumbers}}
     <li>
@@ -7,3 +8,4 @@
     </li>
     {{/each}}
 </ul>
+{{/unless}}
