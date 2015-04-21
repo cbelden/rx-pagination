@@ -26,9 +26,8 @@
 var searchInput = document.getElementById('search');
 var searchEvents = Rx.Observable.fromEvent(searchInput, 'keyup')
     .map(function (e) { return $(e.target).val(); })
-    .map(tokenize)
     .map(search)
-    .startWith({filter: function () { return true }, query: []});
+    .startWith(function () { return true });
 
 
 /**
@@ -53,13 +52,12 @@ var pageUpdates = searchEvents
         return pagingEvents
             .map(function (page) {
                 return {
-                    filter: search.filter,
+                    filter: search,
                     page: page,
-                    pageSize: PAGE_SIZE,
-                    query: search.query
+                    pageSize: PAGE_SIZE
                 }
             })
-            .startWith({filter: search.filter, query: [], page: 1, pageSize: PAGE_SIZE});
+            .startWith({filter: search, page: 1, pageSize: PAGE_SIZE});
     });
 
 
@@ -70,7 +68,7 @@ var pageModels = pageUpdates
     .map(function (options) {
         var results = JSON.parse(JSON.stringify(resultsStore))
             .filter(function (result) {
-                return options.filter(tokenize(result.title));
+                return options.filter(result.title);
             });
 
         var paginatedResults = paginate(Rx.Observable.from(results), options);
@@ -80,19 +78,11 @@ var pageModels = pageUpdates
             .range(1, numberOfPages)
             .map(function (n) { return { number: n, active: options.page !== n }});
 
-        var startIndex = (options.page - 1) * options.pageSize + 1;
-        var endIndex = startIndex + options.pageSize - 1;
-        if (endIndex > results.length) endIndex = results.length;
-
         // Return the page's model
         return {
-            query: options.query,
             totalSize: results.length,
             results: paginatedResults,
-            pageNumbers: pageNumbers,
-            currentPage: options.page,
-            startIndex: startIndex,
-            endIndex: endIndex
+            pageNumbers: pageNumbers
         }
     });
 
@@ -132,29 +122,13 @@ function paginate (results, options) {
 }
 
 
-function tokenize (s) {
-    if (!s) return [];
-    return s.toLowerCase().split(' ');
-}
+function search (query) {
+    return function (target) {
+        if (!query) return true;
 
-
-function search (queryTokens) {
-    return {
-        filter: function (resultTokens) {
-            if (!queryTokens) return true;
-
-            /*
-             * We're interested in results that have at least one token for each
-             * query token that contains that query token.
-             */
-            return queryTokens.every(function (queryToken) {
-                return resultTokens
-                    .some(function (resultToken) {
-                        return resultToken.indexOf(queryToken) !== -1;
-                    });
-            });
-        },
-
-        query: queryTokens
+        /*
+         * Very rudimentary search filter.
+         */
+        return target.toLowerCase().indexOf(query.toLowerCase()) !== -1;
     };
 }
