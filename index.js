@@ -21,18 +21,6 @@
 
 
 /**
- *  Filter updates. Each time a user enters text in the search box, we will
- *  map this event to a string value (the entered text) and push it to our
- *  data stream.
- */
-var searchInput = document.getElementById('search');
-var searchEvents = Rx.Observable.fromEvent(searchInput, 'keyup')
-    .map(function (e) { return $(e.target).val(); })
-    .map(search)
-    .startWith(function () { return true });
-
-
-/**
  *  Paging updates (ie when a user selects a new page). Every time an <a> element
  *  is clicked, we will map that event to a number and push it to our data stream.
  *
@@ -55,18 +43,14 @@ var pagingEvents = Rx.Observable.fromEventPattern(
  *  different pages get selected. I think this is easier to conceptulaize by
  *  playing with the demo.
  */
-var pageUpdates = searchEvents
-    .selectMany(function (search) {
-        return pagingEvents
-            .map(function (page) {
-                return {
-                    filter: search,
-                    page: page,
-                    pageSize: PAGE_SIZE
-                }
-            })
-            .startWith({filter: search, page: 1, pageSize: PAGE_SIZE});
-    });
+var pageUpdates = pagingEvents
+    .map(function (page) {
+        return {
+            page: page,
+            pageSize: PAGE_SIZE
+        }
+    })
+    .startWith({page: 1, pageSize: PAGE_SIZE});
 
 
 /**
@@ -76,27 +60,21 @@ var pageUpdates = searchEvents
  */
 var pageModels = pageUpdates
     .map(function (options) {
-        // Filter our results based on the supplied filter (mapped from text-input)
-        var results = JSON.parse(JSON.stringify(resultsStore))
-            .filter(function (result) {
-                return options.filter(result.title);
-            });
-
         // Apply pagination
-        var paginatedResults = Rx.Observable.from(results)
+        var paginatedResults = Rx.Observable.from(resultsStore)
             .skip((options.page - 1) * options.pageSize)
-            .take(options.pageSize);;
+            .take(options.pageSize);
 
         // Create a stream of page numbers (displayed at the bottom of the list for
         // navigation)
-        var numberOfPages = Math.ceil(results.length / options.pageSize);
+        var numberOfPages = Math.ceil(resultsStore.length / options.pageSize);
         var pageNumbers = Rx.Observable
             .range(1, numberOfPages)
             .map(function (n) { return { number: n, active: options.page !== n }});
 
         // Return the page's model
         return {
-            totalSize: results.length,
+            totalSize: resultsStore.length,
             results: paginatedResults,
             pageNumbers: pageNumbers
         }
@@ -124,20 +102,3 @@ pageModels.subscribe(function render (model) {
                 })
         });
 });
-
-
-/**
- * Search
- */
-
-
-function search (query) {
-
-    /*
-     * Very rudimentary search filter.
-     */
-    return function (target) {
-        if (!query) return true;
-        return target.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-    };
-}
