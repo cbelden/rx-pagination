@@ -38,10 +38,9 @@ var pagingEvents = Rx.Observable.fromEventPattern(
     .startWith(1);
 
 /**
- *  Here we combine the search events and the paging events. We can think of the
- *  search events as the parent stream, which then spawns other streams when
- *  different pages get selected. I think this is easier to conceptulaize by
- *  playing with the demo.
+ *  Here we map each paging event to a set of information that will be used
+ *  to paginate our data. We will send the current page and the page size
+ *  to the consumer.
  */
 var pageUpdates = pagingEvents
     .map(function (page) {
