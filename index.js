@@ -102,11 +102,6 @@ var pageModels = pageUpdates
  */
 pageModels.subscribe(function render (model) {
     model.results
-        // Add match-highlighting
-        .map(function (result) {
-            result.title = highlightMatches(result.title, model.query);
-            return result;
-        })
         .toArray()
         .subscribe(function (displayedResults) {
             // Render the displayed results
@@ -165,37 +160,4 @@ function search (queryTokens) {
 
         query: queryTokens
     };
-}
-
-
-/**
- * Highlighting
- */
-
-
-function highlightMatches(term, queryTokens) {
-    var resultTokens = term.split(' ');
-
-    return resultTokens
-        .map(function (resultToken) {
-            var match = queryTokens
-                .filter(function (queryToken) { return queryToken; })
-                .map(function (queryToken) {
-                    return {
-                        index: resultToken.toLowerCase().indexOf(queryToken),
-                        size: queryToken.length
-                    }
-                })
-                .filter(function (match) { return match.index !== -1 })[0];
-
-            if (match) {
-                var left = resultToken.slice(0, match.index);
-                var middle = resultToken.slice(match.index, match.index + match.size);
-                var right = resultToken.slice(match.index + match.size);
-                return left + '<span class="match">' + middle + '</span>' + right;
-            }
-
-            return resultToken;
-        })
-        .join(' ');
 }
