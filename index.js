@@ -113,10 +113,7 @@ pageModels.subscribe(function render (model) {
                 .subscribe(function (pageNumbers) {
                     $('.pagination').html(templates.pageNumbers({
                         pageNumbers: pageNumbers,
-                        totalSize: model.totalSize,
-                        startIndex: model.startIndex,
-                        endIndex: model.endIndex,
-                        singlePage: pageNumbers.length <= 1
+                        totalSize: model.totalSize
                     }));
                 })
         });
