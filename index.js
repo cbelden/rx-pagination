@@ -4,6 +4,16 @@
  var Rx = require('rx');
  var $ = require('jQuery');
  var resultsStore = require('./movies');
+ var pagination = require('./src/pagination');
+
+
+ /**
+  *  Pagination
+  */
+ var search = pagination.search;
+ var paginate = pagination.paginate;
+ var tokenize = pagination.tokenize;
+ var highlightMatches = pagination.highlightMatches;
 
 
  /**
@@ -25,7 +35,7 @@
  */
 var searchInput = document.getElementById('search');
 var searchEvents = Rx.Observable.fromEvent(searchInput, 'keyup')
-    .map(function (e) { return $(e.target).val(); })
+    .map(function (e) { return e.target.value })
     .map(tokenize)
     .map(search)
     .startWith({filter: function () { return true }, query: []});
@@ -40,9 +50,7 @@ var $pageLinks = $('.results-container');
 var pagingEvents = Rx.Observable.fromEventPattern(
     function addHandler (h) { $pageLinks.on('click', 'a', h)},
     function delHandler (h) { $pageLinks.off('click', 'a', h)})
-    .map(function (e) {
-        return parseInt($(e.target).text());
-    })
+    .map(function (e) { return parseInt(e.target.text) })
     .startWith(1);
 
 /**
@@ -126,76 +134,3 @@ pageModels.subscribe(function render (model) {
                 })
         });
 });
-
-
-/**
- * Pagination and Search
- */
-
-
-function paginate (results, options) {
-    return results
-            .skip((options.page - 1) * options.pageSize)
-            .take(options.pageSize);
-}
-
-
-function tokenize (s) {
-    if (!s) return [];
-    return s.toLowerCase().split(' ');
-}
-
-
-function search (queryTokens) {
-    return {
-        filter: function (resultTokens) {
-            if (!queryTokens) return true;
-
-            /*
-             * We're interested in results that have at least one token for each
-             * query token that contains that query token.
-             */
-            return queryTokens.every(function (queryToken) {
-                return resultTokens
-                    .some(function (resultToken) {
-                        return resultToken.indexOf(queryToken) !== -1;
-                    });
-            });
-        },
-
-        query: queryTokens
-    };
-}
-
-
-/**
- * Highlighting
- */
-
-
-function highlightMatches(term, queryTokens) {
-    var resultTokens = term.split(' ');
-
-    return resultTokens
-        .map(function (resultToken) {
-            var match = queryTokens
-                .filter(function (queryToken) { return queryToken; })
-                .map(function (queryToken) {
-                    return {
-                        index: resultToken.toLowerCase().indexOf(queryToken),
-                        size: queryToken.length
-                    }
-                })
-                .filter(function (match) { return match.index !== -1 })[0];
-
-            if (match) {
-                var left = resultToken.slice(0, match.index);
-                var middle = resultToken.slice(match.index, match.index + match.size);
-                var right = resultToken.slice(match.index + match.size);
-                return left + '<span class="match">' + middle + '</span>' + right;
-            }
-
-            return resultToken;
-        })
-        .join(' ');
-}
