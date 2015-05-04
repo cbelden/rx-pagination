@@ -17,6 +17,7 @@ gulp.task('bundle', function () {
 });
 
 gulp.task('watch', function () {
+    gulp.watch('./src/**/*.js', ['bundle']);
     gulp.watch('./index.js', ['bundle']);
     gulp.watch('./templates/*.handlebars', ['bundle']);
 })
