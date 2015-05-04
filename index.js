@@ -5,15 +5,16 @@
  var $ = require('jQuery');
  var resultsStore = require('./movies');
  var pagination = require('./src/pagination');
+ var searchUtils = require('./src/search');
 
 
  /**
   *  Pagination
   */
- var search = pagination.search;
+ var search = searchUtils.search;
+ var tokenize = searchUtils.tokenize;
+ var highlightMatches = searchUtils.highlightMatches;
  var paginate = pagination.paginate;
- var tokenize = pagination.tokenize;
- var highlightMatches = pagination.highlightMatches;
 
 
  /**
@@ -27,7 +28,7 @@
 /**
  *  Page size
  */
- var PAGE_SIZE = 8;
+ var PAGE_SIZE = 7;
 
 
 /**
@@ -76,26 +77,26 @@ var pageUpdates = searchEvents
  */
 var pageModels = pageUpdates
     .map(function (options) {
-        var results = JSON.parse(JSON.stringify(resultsStore))
+        options.items = JSON.parse(JSON.stringify(resultsStore))
             .filter(function (result) {
                 return options.filter(tokenize(result.title));
             });
 
-        var paginatedResults = paginate(Rx.Observable.from(results), options);
+        var paginatedResults = paginate(options);
 
-        var numberOfPages = Math.ceil(results.length / options.pageSize);
+        var numberOfPages = Math.ceil(options.items.length / options.pageSize);
         var pageNumbers = Rx.Observable
             .range(1, numberOfPages)
             .map(function (n) { return { number: n, active: options.page !== n }});
 
         var startIndex = (options.page - 1) * options.pageSize + 1;
         var endIndex = startIndex + options.pageSize - 1;
-        if (endIndex > results.length) endIndex = results.length;
+        if (endIndex > options.items.length) endIndex = options.items.length;
 
         // Return the page's model
         return {
             query: options.query,
-            totalSize: results.length,
+            totalSize: options.items.length,
             results: paginatedResults,
             pageNumbers: pageNumbers,
             currentPage: options.page,
@@ -113,6 +114,8 @@ pageModels.subscribe(function render (model) {
         // Add match-highlighting
         .map(function (result) {
             result.title = highlightMatches(result.title, model.query);
+            result.description = result.description.slice(0, 100) + "...";
+            result.description = highlightMatches(result.description, model.query);
             return result;
         })
         .toArray()

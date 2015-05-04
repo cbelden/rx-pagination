@@ -27,6 +27,7 @@
     "gulp-concat": "^2.5.2",
     "handlebars": "^3.0.1",
     "hbsfy": "^2.2.1",
+    "karma": "^0.12.31",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
