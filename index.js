@@ -82,26 +82,11 @@ var pageModels = pageUpdates
                 return options.filter(tokenize(result.title));
             });
 
-        var paginatedResults = paginate(options);
-
-        var numberOfPages = Math.ceil(options.items.length / options.pageSize);
-        var pageNumbers = Rx.Observable
-            .range(1, numberOfPages)
-            .map(function (n) { return { number: n, active: options.page !== n }});
-
-        var startIndex = (options.page - 1) * options.pageSize + 1;
-        var endIndex = startIndex + options.pageSize - 1;
-        if (endIndex > options.items.length) endIndex = options.items.length;
-
         // Return the page's model
         return {
             query: options.query,
             totalSize: options.items.length,
-            results: paginatedResults,
-            pageNumbers: pageNumbers,
-            currentPage: options.page,
-            startIndex: startIndex,
-            endIndex: endIndex
+            paginated: paginate(options)
         }
     });
 
@@ -110,30 +95,16 @@ var pageModels = pageUpdates
  * Subscribe to the model updates and re-render the page
  */
 pageModels.subscribe(function render (model) {
-    model.results
+    var items = model.paginated.items
         // Add match-highlighting
-        .map(function (result) {
-            result.title = highlightMatches(result.title, model.query);
-            result.description = result.description.slice(0, 100) + "...";
-            result.description = highlightMatches(result.description, model.query);
-            return result;
-        })
-        .toArray()
-        .subscribe(function (displayedResults) {
-            // Render the displayed results
-            $('.results').html(templates.results({ results: displayedResults }));
-
-            // Render the pagination information
-            model.pageNumbers
-                .toArray()
-                .subscribe(function (pageNumbers) {
-                    $('.pagination').html(templates.pageNumbers({
-                        pageNumbers: pageNumbers,
-                        totalSize: model.totalSize,
-                        startIndex: model.startIndex,
-                        endIndex: model.endIndex,
-                        singlePage: pageNumbers.length <= 1
-                    }));
-                })
+        .map(function (item) {
+            item.title = highlightMatches(item.title, model.query);
+            return item;
         });
+
+    // Render the results
+    $('.results').html(templates.results({ results: items }));
+
+    // Render the pagination information
+    $('.pagination').html(templates.pageNumbers(model.paginated.paging));
 });
